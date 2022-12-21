@@ -1,0 +1,345 @@
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>application: Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			.cov0 { color: rgb(192, 0, 0) }
+.cov1 { color: rgb(128, 128, 128) }
+.cov2 { color: rgb(116, 140, 131) }
+.cov3 { color: rgb(104, 152, 134) }
+.cov4 { color: rgb(92, 164, 137) }
+.cov5 { color: rgb(80, 176, 140) }
+.cov6 { color: rgb(68, 188, 143) }
+.cov7 { color: rgb(56, 200, 146) }
+.cov8 { color: rgb(44, 212, 149) }
+.cov9 { color: rgb(32, 224, 152) }
+.cov10 { color: rgb(20, 236, 155) }
+
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				
+				<option value="file0">github.com/marcos-dev88/sol_test/application/application.go (94.0%)</option>
+				
+				<option value="file1">github.com/marcos-dev88/sol_test/application/mock.go (100.0%)</option>
+				
+				<option value="file2">github.com/marcos-dev88/sol_test/application/mock_input.go (100.0%)</option>
+				
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			
+			</div>
+		</div>
+		<div id="content">
+		
+		<pre class="file" id="file0" style="display: none">package application
+
+import (
+        "strings"
+
+        "github.com/marcos-dev88/sol_test/check_password/entity"
+)
+
+type Application interface {
+        RunCheck() ([]string, error)
+        GetPassword() *Password
+        SetPassword(*Password) error
+        SetVerify(Password)
+}
+
+func NewApp(password *entity.PasswordType) Application <span class="cov8" title="1">{
+        return &amp;app{password: password}
+}</span>
+
+func (a *app) RunCheck() ([]string, error) <span class="cov8" title="1">{
+        if a.service == nil </span><span class="cov8" title="1">{
+                a.service = NewVerify(*a.password)
+        }</span>
+
+        <span class="cov8" title="1">out := make([]string, 0)
+
+        if a.password != nil </span><span class="cov8" title="1">{
+                for _, v := range a.password.Rules </span><span class="cov8" title="1">{
+                        switch checkCases[v.Rule] </span>{
+                        case MinSizeCheck:<span class="cov8" title="1">
+                                if err := a.minSize(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+
+                                                return nil, err
+                                        }</span>
+
+                                        <span class="cov8" title="1">out = append(out, entity.MinSize)</span>
+                                }
+
+                        case MinDigitCheck:<span class="cov8" title="1">
+                                if err := a.minDigit(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+                                                return nil, err
+                                        }</span>
+
+                                        <span class="cov8" title="1">out = append(out, entity.MinDigit)</span>
+                                }
+
+                        case MinLowercaseCheck:<span class="cov8" title="1">
+                                if err := a.minLowerCase(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+                                                return nil, err
+                                        }</span>
+
+                                        <span class="cov8" title="1">out = append(out, entity.MinLowercase)</span>
+                                }
+
+                        case MinUppercaseCheck:<span class="cov8" title="1">
+                                if err := a.minUpperCase(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+                                                return nil, err
+                                        }</span>
+
+                                        <span class="cov8" title="1">out = append(out, entity.MinUppercase)</span>
+                                }
+
+                        case MinSpecialCharsCheck:<span class="cov8" title="1">
+                                if err := a.minSpecialChars(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+                                                return nil, err
+                                        }</span>
+                                        <span class="cov8" title="1">out = append(out, entity.MinSpecialChars)</span>
+                                }
+
+                        case NoRepetedCheck:<span class="cov8" title="1">
+                                if err := a.noRepeat(); err != nil </span><span class="cov8" title="1">{
+                                        if !isVerifyError(err) </span><span class="cov8" title="1">{
+                                                return nil, err
+                                        }</span>
+
+                                        <span class="cov0" title="0">out = append(out, entity.NoRepeted)</span>
+                                }
+                        }
+                }
+        }
+
+        <span class="cov8" title="1">return out, nil</span>
+}
+
+func (a *app) GetPassword() *Password <span class="cov8" title="1">{
+        if a.password != nil </span><span class="cov8" title="1">{
+                return &amp;Password{Password: a.password.Password, Rules: a.password.Rules}
+        }</span>
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (a *app) SetPassword(password *Password) error <span class="cov8" title="1">{
+
+        if password != nil </span><span class="cov8" title="1">{
+                newPassword, err := NewPassword(password.Password, password.Rules)
+
+                if err != nil </span><span class="cov0" title="0">{
+                        return err
+                }</span>
+
+                <span class="cov8" title="1">a.password = newPassword</span>
+        } else<span class="cov8" title="1"> {
+                a.password = nil
+        }</span>
+
+        <span class="cov8" title="1">return nil</span>
+}
+
+func (a *app) SetVerify(password Password) <span class="cov0" title="0">{
+        a.service = NewVerify(entity.PasswordType{Password: password.Password, Rules: password.Rules})
+}</span>
+
+func (a *app) minSize() error <span class="cov8" title="1">{
+        return a.service.MinSize()
+}</span>
+
+func (a *app) minUpperCase() error <span class="cov8" title="1">{
+        return a.service.MinUpperCase()
+}</span>
+func (a *app) minLowerCase() error <span class="cov8" title="1">{
+        return a.service.MinLowerCase()
+}</span>
+
+func (a *app) minDigit() error <span class="cov8" title="1">{
+        return a.service.MinDigit()
+}</span>
+
+func (a *app) minSpecialChars() error <span class="cov8" title="1">{
+        return a.service.MinSpecialChars()
+}</span>
+
+func (a *app) noRepeat() error <span class="cov8" title="1">{
+        return a.service.NoRepeat()
+}</span>
+
+func isVerifyError(err error) bool <span class="cov8" title="1">{
+        return strings.Contains(err.Error(), "error verify:")
+
+}</span>
+</pre>
+		
+		<pre class="file" id="file1" style="display: none">package application
+
+import "github.com/marcos-dev88/sol_test/check_password/entity"
+
+type verifyMock struct {
+        password           entity.PasswordType
+        errMinSize         error
+        errUpperCase       error
+        errMinLowerCase    error
+        errMinDigit        error
+        errMinSpecialChars error
+        errNoRepeat        error
+}
+
+func (v *verifyMock) MinSize() error <span class="cov8" title="1">{
+        return v.errMinSize
+}</span>
+
+func (v *verifyMock) MinUpperCase() error <span class="cov8" title="1">{
+        return v.errUpperCase
+}</span>
+
+func (v *verifyMock) MinLowerCase() error <span class="cov8" title="1">{
+        return v.errMinLowerCase
+}</span>
+
+func (v *verifyMock) MinDigit() error <span class="cov8" title="1">{
+        return v.errMinDigit
+}</span>
+
+func (v *verifyMock) MinSpecialChars() error <span class="cov8" title="1">{
+        return v.errMinSpecialChars
+}</span>
+
+func (v *verifyMock) NoRepeat() error <span class="cov8" title="1">{
+        return v.errNoRepeat
+}</span>
+</pre>
+		
+		<pre class="file" id="file2" style="display: none">package application
+
+import (
+        "encoding/json"
+
+        "github.com/marcos-dev88/sol_test/check_password/entity"
+)
+
+var lowSizePassword = `{"password":"lowpass","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+// upperCases JSONs
+var (
+        successUpperCase = `{"password":"11124ASf***$g*&amp;lmfd%fFG#HHs%3301C!@O","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        successUpperCaseMore = `{"password":"1ASfgJJgmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        errorUpperCase = `{"password":"1ASfggmfdwfFGsHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+)
+
+// lowerCases JSONs
+var (
+        successLowerCase = `{"password":"1ASfggmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        successLowerCaseMore = `{"password":"1ASfgJJgmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        errorLowerCase = `{"password":"1ASffFGsHs%3COO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+)
+
+// digits JSONs
+var (
+        successDigit = `{"password":"1111111ggmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        successDigitMore = `{"password":"1A0101011001SfgJJgmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        errorDigit = `{"password":"1ASffFGsHs%3COO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+)
+
+// specialChars JSONs
+var (
+        successSpecialChar = `{"password":"$%)([])ggmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        successSpecialCharMore = `{"password":"1A%%!##$%)([])JgmfdwfFGsHHs%3CO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+
+        errorSpecialChar = `{"password":"1ASffFGsHs%3COO","rules":[{"rule":"minSize","value":8},{"rule":"minSpecialChars","value":8},{"rule":"noRepeted"},{"rule":"minDigit","value":8},{"rule":"minUppercase","value":8},{"rule":"minLowercase","value":8}]}`
+)
+
+func mockPasswordStruct(pasStr string) *entity.PasswordType <span class="cov8" title="1">{
+
+        pass := new(entity.PasswordType)
+        json.Unmarshal([]byte(pasStr), pass)
+
+        return pass
+}</span>
+</pre>
+		
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>

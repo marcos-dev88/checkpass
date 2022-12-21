@@ -1,0 +1,5 @@
+tags
+
+# ignoring coverage files
+./check_password/entity/cover.html
+./check_password/entity/cover.out
